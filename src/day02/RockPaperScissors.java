@@ -12,6 +12,7 @@ public class RockPaperScissors {
 
     public static void main(String[] args) {
         System.out.println(part1());
+        System.out.println(part2());
     }
 
     public static int part1() {
@@ -22,6 +23,22 @@ public class RockPaperScissors {
                 Shape[] shapes = parseShapes(line);
                 Result result = getMatchResult(shapes[0], shapes[1]);
                 total += calcPoints(result, shapes[1]);
+            }
+            return total;
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static int part2() {
+        try (Scanner s = new Scanner(new File("inputs/day02/RockPaperScissors.txt"))) {
+            int total = 0;
+            while (s.hasNextLine()) {
+                String[] line = s.nextLine().split(" ");
+                Shape[] shapes = parseShapes(line);
+                Result desiredResult = parseResult(line[1]);
+                Shape selectedShape = getShapeForResult(shapes[0], desiredResult);
+                total += calcPoints(desiredResult, selectedShape);
             }
             return total;
         } catch (FileNotFoundException e) {
@@ -42,6 +59,14 @@ public class RockPaperScissors {
         return shapes;
     }
 
+    static Result parseResult(String s) {
+        return switch (s) {
+            case "X" -> Result.LOSE;
+            case "Y" -> Result.DRAW;
+            default -> Result.WIN;
+        };
+    }
+
     static Result getMatchResult(Shape opponent, Shape player) {
         if (opponent == player)
             return Result.DRAW;
@@ -55,5 +80,19 @@ public class RockPaperScissors {
     static int calcPoints(Result result, Shape shape) {
         return (shape.ordinal()+1) + (result.ordinal()*3);
     }
+
+    static Shape getShapeForResult(Shape opponent, Result desiredResult) {
+        if (desiredResult == Result.DRAW)
+            return opponent;
+        int offset = desiredResult == Result.WIN ? 1 : -1;
+        int target = opponent.ordinal() + offset;
+        if (target < 0)
+            target += Shape.values().length;
+        if (target >= Shape.values().length)
+            target -= Shape.values().length;
+        return Shape.values()[target];
+    }
+
+
 
 }
