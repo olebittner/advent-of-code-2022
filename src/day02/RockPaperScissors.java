@@ -1,8 +1,9 @@
 package day02;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import util.Util;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class RockPaperScissors {
 
@@ -11,39 +12,34 @@ public class RockPaperScissors {
     enum Result {LOSE, DRAW, WIN}
 
     public static void main(String[] args) {
-        System.out.println(part1());
-        System.out.println(part2());
+        List<String> input = Util.readInput("day02/RockPaperScissors.txt");
+        System.out.println(part1(input));
+        System.out.println(part2(input));
     }
 
-    public static int part1() {
-        try (Scanner s = new Scanner(new File("inputs/day02/RockPaperScissors.txt"))) {
-            int total = 0;
-            while (s.hasNextLine()) {
-                String[] line = s.nextLine().split(" ");
-                Shape[] shapes = parseShapes(line);
-                Result result = getMatchResult(shapes[0], shapes[1]);
-                total += calcPoints(result, shapes[1]);
-            }
-            return total;
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+    public static int part1(List<String> input) {
+        Iterator<String> i = input.iterator();
+        int total = 0;
+        while (i.hasNext()) {
+            String[] line = i.next().split(" ");
+            Shape[] shapes = parseShapes(line);
+            Result result = getMatchResult(shapes[0], shapes[1]);
+            total += calcPoints(result, shapes[1]);
         }
+        return total;
     }
 
-    public static int part2() {
-        try (Scanner s = new Scanner(new File("inputs/day02/RockPaperScissors.txt"))) {
-            int total = 0;
-            while (s.hasNextLine()) {
-                String[] line = s.nextLine().split(" ");
-                Shape[] shapes = parseShapes(line);
-                Result desiredResult = parseResult(line[1]);
-                Shape selectedShape = getShapeForResult(shapes[0], desiredResult);
-                total += calcPoints(desiredResult, selectedShape);
-            }
-            return total;
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+    public static int part2(List<String> input) {
+        Iterator<String> i = input.iterator();
+        int total = 0;
+        while (i.hasNext()) {
+            String[] line = i.next().split(" ");
+            Shape[] shapes = parseShapes(line);
+            Result desiredResult = parseResult(line[1]);
+            Shape selectedShape = getShapeForResult(shapes[0], desiredResult);
+            total += calcPoints(desiredResult, selectedShape);
         }
+        return total;
     }
 
     static Shape[] parseShapes(String[] strings) {
