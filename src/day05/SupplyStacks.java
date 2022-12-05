@@ -14,15 +14,21 @@ public class SupplyStacks {
 
     public static void main(String[] args) {
         List<String> input = Util.readInput("day05/SupplyStacks.txt");
-        System.out.println(part1(input));
-        //System.out.println(part2(input));
-    }
-
-    public static String part1(List<String> input) {
         List<String> setup = input.subList(0, input.indexOf("")-1);
         List<String> moves = input.subList(input.indexOf("")+1, input.size());
+        System.out.println(part1(setup, moves));
+        System.out.println(part2(setup, moves));
+    }
+
+    public static String part1(List<String> setup, List<String> moves) {
         List<Stack<Character>> stacks = parseStackSetup(setup);
-        performMoves(stacks, moves);
+        performMoves9000(stacks, moves);
+        return getTopCrates(stacks);
+    }
+
+    public static String part2(List<String> setup, List<String> moves) {
+        List<Stack<Character>> stacks = parseStackSetup(setup);
+        performMoves9001(stacks, moves);
         return getTopCrates(stacks);
     }
 
@@ -41,7 +47,7 @@ public class SupplyStacks {
         return crates;
     }
 
-    static void performMoves(List<Stack<Character>> stacks, List<String> moves) {
+    static void performMoves9000(List<Stack<Character>> stacks, List<String> moves) {
         Pattern r = Pattern.compile(MOVE_PATTERN);
         for (String move : moves) {
             Matcher m = r.matcher(move);
@@ -50,6 +56,22 @@ public class SupplyStacks {
                     Character crate = stacks.get(Integer.parseInt(m.group(2)) - 1).pop();
                     stacks.get(Integer.parseInt(m.group(3)) - 1).push(crate);
                 }
+            }
+        }
+    }
+
+    static void performMoves9001(List<Stack<Character>> stacks, List<String> moves) {
+        Pattern r = Pattern.compile(MOVE_PATTERN);
+        for (String move : moves) {
+            Matcher m = r.matcher(move);
+            if(m.find()) {
+                Stack<Character> crane = new Stack<>();
+                for (int i = 0; i < Integer.parseInt(m.group(1)); i++) {
+                    Character crate = stacks.get(Integer.parseInt(m.group(2)) - 1).pop();
+                    crane.push(crate);
+                }
+                while (!crane.isEmpty())
+                    stacks.get(Integer.parseInt(m.group(3)) - 1).push(crane.pop());
             }
         }
     }
