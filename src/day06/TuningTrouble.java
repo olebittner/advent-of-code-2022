@@ -1,28 +1,25 @@
 package day06;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 public class TuningTrouble {
 
     public static void main(String[] args) {
-        System.out.println(part1());
-//        System.out.println(part2(setup, moves));
+        System.out.println(findSequenceOfUniqueChars(4));
+        System.out.println(findSequenceOfUniqueChars(14));
     }
 
-    public static int part1() {
-        try (Reader r = new BufferedReader(new InputStreamReader(new FileInputStream(new File("inputs/day06/TuningTrouble.txt")), StandardCharsets.UTF_8))) {
-            char[] store = new char[4];
+    public static int findSequenceOfUniqueChars(int length) {
+        try (Reader r = new BufferedReader(new InputStreamReader(new FileInputStream("inputs/day06/TuningTrouble.txt"), StandardCharsets.UTF_8))) {
+            char[] store = new char[length];
             int i = 0;
             int current;
             while ((current = r.read()) != -1) {
-                store[i++%4] = (char) current;
-                if (i >= 4 && !containsDuplicates(store))
+                store[i++ % length] = (char) current;
+                if (i >= length && !containsDuplicates(store))
                     return i;
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
