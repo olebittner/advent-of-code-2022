@@ -7,17 +7,26 @@ import java.util.List;
 
 public class NoSpaceLeftOnDevice {
 
+    private static final long TOTAL_SIZE = 70000000;
+    private static final long REQUIRED_SPACE = 30000000;
+
     public static void main(String[] args) {
         List<String> input = Util.readInput("day07/NoSpaceLeftOnDevice.txt");
-        System.out.println(part1(input));
-        //System.out.println(part2(input));
-    }
-
-    public static long part1(List<String> input) {
         Directory fileSystem = new Directory("/");
         buildFileSystem(input.listIterator(), fileSystem);
         List<Directory> directoryList = flattenDirectories(fileSystem);
+        System.out.println(part1(directoryList));
+        System.out.println(part2(fileSystem, directoryList));
+    }
+
+    public static long part1(List<Directory> directoryList) {
         return directoryList.stream().mapToLong(Directory::getSize).filter(value -> value <= 100_000).sum();
+    }
+
+    public static long part2(Directory root, List<Directory> directoryList) {
+        long freeSpace = TOTAL_SIZE - root.getSize();
+        long spaceDiff = REQUIRED_SPACE - freeSpace;
+        return directoryList.stream().mapToLong(Directory::getSize).filter(s -> s >= spaceDiff).sorted().findFirst().orElse(-1);
     }
 
     static boolean buildFileSystem(Iterator<String> input, Directory dir) {
