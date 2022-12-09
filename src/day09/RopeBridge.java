@@ -11,7 +11,7 @@ public class RopeBridge {
     public static void main(String[] args) {
         List<String> input = Util.readInput("day09/RopeBridge.txt");
         System.out.println(part1(input));
-//        System.out.println(part2(input));
+        System.out.println(part2(input, 10));
     }
 
     public static int part1(List<String> input) {
@@ -22,17 +22,38 @@ public class RopeBridge {
             String[] split = move.split(" ");
             int distance = Integer.parseInt(split[1]);
             for (int i = 0; i < distance; i++) {
-                switch (split[0]) {
-                    case "R" -> head[0]++;
-                    case "L" -> head[0]--;
-                    case "U" -> head[1]++;
-                    case "D" -> head[1]--;
-                }
+                moveHead(head, split[0]);
                 moveTail(head, tail);
                 positions.add(List.of(tail[0], tail[1]));
             }
         }
         return positions.size();
+    }
+
+    public static int part2(List<String> input, int amount) {
+        int[][] knots = new int[amount][2];
+        Set<List<Integer>> positions = new HashSet<>();
+        for (String move : input) {
+            String[] split = move.split(" ");
+            int distance = Integer.parseInt(split[1]);
+            for (int i = 0; i < distance; i++) {
+                moveHead(knots[0], split[0]);
+                for (int k = 1; k < amount; k++) {
+                    moveTail(knots[k - 1], knots[k]);
+                }
+                positions.add(List.of(knots[amount - 1][0], knots[amount - 1][1]));
+            }
+        }
+        return positions.size();
+    }
+
+    private static void moveHead(int[] head, String direction) {
+        switch (direction) {
+            case "R" -> head[0]++;
+            case "L" -> head[0]--;
+            case "U" -> head[1]++;
+            case "D" -> head[1]--;
+        }
     }
 
     static int calcDistance(int[] head, int[] tail) {
