@@ -48,7 +48,17 @@ public class HillClimbingAlgorithm {
         List<Integer> shortestPath = findWithAStar(nodes, start, exit, width);
         print(nodes, (ArrayList<Integer>) shortestPath);
         System.out.println(shortestPath.size() - 1);
-//        System.out.println(part2());
+        shortestPath = null;
+        for (int i = 0; i < nodes.length; i++) {
+            if (nodes[i].getHeight() == 0) {
+                List<Integer> path = findWithAStar(nodes, i, exit, width);
+                if (path != null && (shortestPath == null || path.size() < shortestPath.size())) {
+                    shortestPath = path;
+                }
+            }
+        }
+        print(nodes, (ArrayList<Integer>) shortestPath);
+        System.out.println(shortestPath.size() - 1);
     }
 
     static int getHeight(char c) {
