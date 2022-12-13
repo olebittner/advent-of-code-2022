@@ -4,9 +4,9 @@ import util.Util;
 
 import java.util.List;
 
-public class RucksackReorganization {
+import static util.Constants.ALPHABET;
 
-    static final String ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+public class RucksackReorganization {
 
     public static void main(String[] args) {
         List<String> input = Util.readInput("day03/RucksackReorganization.txt");
