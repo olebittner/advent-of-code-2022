@@ -1,23 +1,22 @@
 package day11;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.LongFunction;
 
 public class Monkey {
 
-    ArrayList<BigInteger> items;
-    Function<BigInteger, BigInteger> worryLevelFunction;
-    Function<BigInteger, BigInteger> worryReduceFunction;
-    private int operationCount = 0;
+    ArrayList<Long> items;
+    LongFunction<Long> worryLevelFunction;
+    LongFunction<Long> worryReduceFunction;
+    private long operationCount = 0;
     private final int divCheck;
     private final int passToOne;
     private final int passToTwo;
-    private BigInteger modBase = null;
+    private int modBase;
 
-    public Monkey(List<Integer> items, Function<BigInteger, BigInteger> worryLevelFunction, Function<BigInteger, BigInteger> worryReduceFunction, int divCheck, int passToOne, int passToTwo) {
-        this.items = new ArrayList<>(items.stream().map(BigInteger::valueOf).toList());
+    public Monkey(List<Long> items, LongFunction<Long> worryLevelFunction, LongFunction<Long> worryReduceFunction, int divCheck, int passToOne, int passToTwo) {
+        this.items = new ArrayList<>(items);
         this.worryLevelFunction = worryLevelFunction;
         this.divCheck = divCheck;
         this.passToOne = passToOne;
@@ -29,14 +28,14 @@ public class Monkey {
         operationCount = Math.addExact(operationCount, 1);
         items.set(0, worryLevelFunction.apply(items.get(0)));
         items.set(0, worryReduceFunction.apply(items.get(0)));
-        items.set(0, items.get(0).mod(modBase));
+        items.set(0, items.get(0) % modBase);
     }
 
     int calcNextMonkey() {
-        return items.get(0).mod(BigInteger.valueOf(divCheck)).equals(BigInteger.ZERO) ? passToOne : passToTwo;
+        return (items.get(0) % divCheck) == 0 ? passToOne : passToTwo;
     }
 
-    public int getOperationCount() {
+    public long getOperationCount() {
         return operationCount;
     }
 
@@ -48,11 +47,11 @@ public class Monkey {
         }
     }
 
-    public void giveItem(BigInteger item) {
+    public void giveItem(long item) {
         items.add(item);
     }
 
-    public void setModBase(BigInteger modBase) {
+    public void setModBase(int modBase) {
         this.modBase = modBase;
     }
 
