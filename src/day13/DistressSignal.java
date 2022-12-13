@@ -9,9 +9,23 @@ public class DistressSignal {
 
     public static void main(String[] args) {
         List<String> input = Util.readInput("day13/DistressSignal.txt");
-        List<SignalPair> signalPairs = parseInputs(input);
+        List<ListSignalPart> signals = parseInputs(input);
+        List<SignalPair> signalPairs = buildSignalPairs(signals);
         System.out.println(identifyCorrectSignals(signalPairs));
-//        System.out.println(part2(setup));
+        System.out.println(calcDecoderKey(signals));
+    }
+
+    public static int calcDecoderKey(List<ListSignalPart> signals) {
+        signals.add(ListSignalPart.fromString("[[2]]"));
+        signals.add(ListSignalPart.fromString("[[6]]"));
+        signals = signals.stream().sorted().toList();
+        int key = 1;
+        for (int i = 0; i < signals.size(); i++) {
+            if (signals.get(i).isDivider()) {
+                key = key * (i + 1);
+            }
+        }
+        return key;
     }
 
     public static int identifyCorrectSignals(List<SignalPair> signalPairs) {
@@ -23,10 +37,20 @@ public class DistressSignal {
         return checkSum;
     }
 
-    static List<SignalPair> parseInputs(List<String> input) {
+    static List<ListSignalPart> parseInputs(List<String> input) {
+        List<ListSignalPart> list = new ArrayList<>();
+        for (String i : input) {
+            if (!i.isEmpty())
+                list.add(ListSignalPart.fromString(i));
+        }
+
+        return list;
+    }
+
+    static List<SignalPair> buildSignalPairs(List<ListSignalPart> signals) {
         List<SignalPair> list = new ArrayList<>();
-        for (int i = 0; i < input.size(); i += 3) {
-            list.add(new SignalPair(input.get(i), input.get(i + 1)));
+        for (int i = 0; i < signals.size(); i += 2) {
+            list.add(new SignalPair(signals.get(i), signals.get(i + 1)));
         }
         return list;
     }

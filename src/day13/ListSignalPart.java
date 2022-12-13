@@ -22,7 +22,7 @@ public class ListSignalPart extends AbstractSignalPart<AbstractSignalPart<?>[]> 
     }
 
     private static ListSignalPart fromSplitString(String[] split) {
-        ArrayList<AbstractSignalPart<?>> list = new ArrayList();
+        ArrayList<AbstractSignalPart<?>> list = new ArrayList<>();
         int i = 0;
         while (i < split.length) {
             if (split[i].equals(""))
@@ -47,6 +47,12 @@ public class ListSignalPart extends AbstractSignalPart<AbstractSignalPart<?>[]> 
     }
 
     @Override
+    public boolean isDivider() {
+        return getValue().length == 1 && getValue()[0] instanceof ListSignalPart innerList && innerList.getValue().length == 1
+                && innerList.getValue()[0] instanceof IntegerSignalPart innerInt && (innerInt.getValue() == 2 || innerInt.getValue() == 6);
+    }
+
+    @Override
     public SignalOrderState compareToRightSignal(AbstractSignalPart<?> right) {
         if (right instanceof ListSignalPart rightList) {
             for (int i = 0; i < Math.min(this.getValue().length, rightList.getValue().length); i++) {
@@ -64,5 +70,10 @@ public class ListSignalPart extends AbstractSignalPart<AbstractSignalPart<?>[]> 
             return this.compareToRightSignal(new ListSignalPart(rightInt));
         }
         throw new IllegalArgumentException("Comparison not implemented");
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(getValue());
     }
 }
