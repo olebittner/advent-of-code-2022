@@ -25,20 +25,31 @@ public class RegolithReservoir {
             }
         }
 
-        GridMaterial[][] grid = createGrid(scans, xMin, xMax, yMax);
+        int part1 = amountOfSand(scans, xMin, xMax, yMax, false);
+        int part2 = amountOfSand(scans, xMin, xMax, yMax, true);
+        System.out.println(part1-1);
+        System.out.println(part2);
+    }
+
+    private static int amountOfSand(List<List<int[]>> scans, int xMin, int xMax, int yMax, boolean infiniteGround) {
+        if (infiniteGround)
+            yMax += 2;
+        GridMaterial[][] grid = createGrid(scans, xMin, xMax, yMax, infiniteGround);
         visualize(grid, xMin);
 
         int amountOfSand = simulateSandFall(xMin, yMax, grid);
         visualize(grid, xMin);
-        System.out.println(amountOfSand-1);
+        return amountOfSand;
     }
 
     private static int simulateSandFall(int xMin, int yMax, GridMaterial[][] grid) {
         int amountOfSand = 0;
         boolean intoTheVoid = false;
+        int[] overflow = new int[] {yMax, yMax};
+        int entrance = 501;
         while (!intoTheVoid) {
             amountOfSand++;
-            int x = 500- xMin;
+            int x = entrance - xMin;
             int y = 0;
             boolean moved;
             do {
@@ -50,26 +61,42 @@ public class RegolithReservoir {
                 if (grid[x][y+1] == GridMaterial.AIR) {
                     y++;
                     moved = true;
-                } else if (grid[x-1][y+1] == GridMaterial.AIR) {
+                } else if (x == 0 && overflow[0] > y+1 ) {
+                    amountOfSand += yMax-y-1;
+                    overflow[0] = y+1;
+                    moved=true;
+                } else if (x >= 1 && grid[x - 1][y + 1] == GridMaterial.AIR) {
                     y++;
                     x--;
                     moved = true;
-                } else if (grid[x + 1][y + 1] == GridMaterial.AIR) {
+                } else if (x == grid.length - 1 && overflow[1] > y+1) {
+                    amountOfSand += yMax-y-1;
+                    overflow[1] = y+1;
+                } else if (x < grid.length - 1 && grid[x + 1][y + 1] == GridMaterial.AIR) {
                     y++;
                     x++;
                     moved = true;
                 }
             } while (moved);
             grid[x][y] = GridMaterial.SAND;
+            if (x == entrance - xMin && y == 0)
+                break;
         }
         return amountOfSand;
     }
 
-    private static GridMaterial[][] createGrid(List<List<int[]>> scans, int xMin, int xMax, int yMax) {
-        int xOffset = xMax - xMin;
+    private static GridMaterial[][] createGrid(List<List<int[]>> scans, int xMin, int xMax, int yMax, boolean infiniteGround) {
+        int xOffset = xMax - xMin + 2;
+        xMin--;
         GridMaterial[][] grid = new GridMaterial[xOffset+1][yMax +1];
         for (GridMaterial[] gridMaterials : grid) {
             Arrays.fill(gridMaterials, GridMaterial.AIR);
+        }
+
+        if (infiniteGround) {
+            for (int i = 0; i < grid.length; i++) {
+                grid[i][yMax] = GridMaterial.ROCK;
+            }
         }
 
         for (List<int[]> cords : scans) {
@@ -82,7 +109,7 @@ public class RegolithReservoir {
                 int upperY = Math.max(startCord[1], endCord[1]);
                 for (int x = lowerX; x <= upperX; x++) {
                     for (int y = lowerY; y <= upperY; y++) {
-                        grid[x- xMin][y] = GridMaterial.ROCK;
+                        grid[x - xMin][y] = GridMaterial.ROCK;
                     }
                 }
                 startCord = endCord;
@@ -97,9 +124,9 @@ public class RegolithReservoir {
 
     public static void visualize(GridMaterial[][] grid, int cx, int cy, int offset) {
         StringBuilder builder = new StringBuilder();
-        builder.append("—".repeat(500 - offset));
+        builder.append("—".repeat(501 - offset));
         builder.append("↓");
-        builder.append("—".repeat(grid.length - (500 - offset) - 1));
+        builder.append("—".repeat(grid.length - (501 - offset) - 1));
         builder.append("\r\n");
         for (int y = 0; y < grid[0].length; y++) {
             for (int x = 0; x < grid.length; x++) {
