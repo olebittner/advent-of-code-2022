@@ -31,4 +31,12 @@ public class Sensor {
     public boolean isInRange(int x, int y) {
         return calcDistance(position, new int[] {x, y}) <= distance;
     }
+
+    public boolean affectsRow(int y) {
+        return position[1]-distance <= y && y <= position[1]+distance;
+    }
+
+    public boolean affectsColumn(int x) {
+        return position[0]-distance <= x && x <= position[0]+distance;
+    }
 }
