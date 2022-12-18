@@ -49,6 +49,12 @@ public class Cords3d {
         return adjacent;
     }
 
+    boolean isBetween(Cords3d min, Cords3d max) {
+        return min.x <= x && x <= max.x &&
+                min.y <= y && y <= max.y &&
+                min.z <= z && z <= max.z;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
