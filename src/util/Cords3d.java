@@ -1,4 +1,4 @@
-package day18;
+package util;
 
 import java.util.Objects;
 
@@ -49,7 +49,7 @@ public class Cords3d {
         return adjacent;
     }
 
-    boolean isBetween(Cords3d min, Cords3d max) {
+    public boolean isBetween(Cords3d min, Cords3d max) {
         return min.x <= x && x <= max.x &&
                 min.y <= y && y <= max.y &&
                 min.z <= z && z <= max.z;
