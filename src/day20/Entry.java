@@ -4,19 +4,23 @@ import java.util.Objects;
 
 public class Entry {
 
-    private final int value;
-    private final int originalPosition;
+    private long value;
+    private final long originalPosition;
 
-    public Entry(int value, int originalPosition) {
+    public Entry(long value, long originalPosition) {
         this.value = value;
         this.originalPosition = originalPosition;
     }
 
-    public int getValue() {
+    public void setValue(long value) {
+        this.value = value;
+    }
+
+    public long getValue() {
         return value;
     }
 
-    public int getOriginalPosition() {
+    public long getOriginalPosition() {
         return originalPosition;
     }
 
