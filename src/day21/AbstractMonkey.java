@@ -1,5 +1,7 @@
 package day21;
 
+import java.util.Objects;
+
 public abstract class AbstractMonkey {
 
     private final String name;
@@ -12,5 +14,22 @@ public abstract class AbstractMonkey {
         return name;
     }
 
-    public abstract long getNumber();
+    public abstract double getNumber();
+
+    public boolean interactsWith(AbstractMonkey monkey) {
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractMonkey that = (AbstractMonkey) o;
+        return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 }
